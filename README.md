@@ -1,147 +1,161 @@
 # Flipkart-Style E-commerce Starter (Next.js + React + TypeScript)
 
-This repository is a **step-by-step starter** for building a Flipkart-like e-commerce project using:
+A structured starter to build a Flipkart-like e-commerce app with:
 
-- **React** (via Next.js App Router)
-- **Next.js**
-- **TypeScript**
-- **Tailwind CSS**
+- React (through Next.js App Router)
+- Next.js
+- TypeScript
+- Tailwind CSS
 
 ---
 
-## 1) Create the repository
+## 1) Create the GitHub repository (step-by-step)
 
-### Step 1: Create a new GitHub repo
-1. Go to GitHub → **New repository**.
-2. Name it (example: `flipkart-clone-nextjs`).
-3. Keep it public or private.
+### Step 1 — Create repo on GitHub
+
+1. Open GitHub → **New repository**.
+2. Repo name suggestion: `flipkart-clone-nextjs`.
+3. Choose visibility (public/private).
 4. Click **Create repository**.
 
-### Step 2: Clone the repo locally
+### Step 2 — Clone to your machine
+
 ```bash
 git clone <your-repo-url>
 cd flipkart-clone-nextjs
 ```
 
+### Step 3 — Install packages
+
+```bash
+npm install
+```
+
+### Step 4 — Run the app
+
+```bash
+npm run dev
+```
+
+Open: [http://localhost:3000](http://localhost:3000)
+
 ---
 
-## 2) Initialize a Next.js + TypeScript app
-
-If you're starting from scratch, run:
+## 2) If starting from zero (create-next-app command)
 
 ```bash
 npx create-next-app@latest . --typescript --eslint --tailwind --app --src-dir=false --import-alias "@/*"
 ```
 
-In this repo, that setup is already prepared manually so you can directly run it.
-
 ---
 
-## 3) Install dependencies and run locally
-
-```bash
-npm install
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000).
-
----
-
-## 4) Project structure explained
+## 3) Project structure and folder strategy
 
 ```text
 .
-├── app/
-│   ├── globals.css          # Global styles + Tailwind layers
-│   ├── layout.tsx           # Root layout metadata and app shell
-│   └── page.tsx             # Home page (hero, categories, products)
-├── components/
-│   ├── Header.tsx           # Flipkart-like top navbar + search
-│   └── ProductCard.tsx      # Reusable product card
-├── data/
-│   └── products.ts          # Demo product/category data
-├── public/                  # Static assets (future logos/images)
-├── next.config.js
-├── package.json
-├── postcss.config.js
-├── tailwind.config.ts
-└── tsconfig.json
+├── app/                      # Pages/routes with Next.js App Router
+├── components/               # Shared UI components
+├── data/                     # Static/demo data
+├── features/                 # Domain-based code modules (products, cart, auth)
+│   └── products/
+├── lib/                      # Shared utilities (env, constants, helpers)
+├── services/                 # API clients and integration helpers
+├── public/                   # Static assets
+├── .env.example              # Environment template
+├── .husky/pre-commit         # Git hook for pre-commit checks
+├── .prettierrc.json          # Formatting rules
+└── package.json              # Scripts/dependencies/lint-staged config
 ```
 
 ---
 
-## 5) What is already built in this starter
+## 4) Phase A setup (implemented in this repo)
 
-- Flipkart-style blue header bar
-- Search input area
-- Category chips (electronics, fashion, etc.)
-- Product grid cards with:
-  - title
-  - brand
-  - rating
-  - pricing (sale + strike price)
-  - discount badge
+### A1. Environment variables
 
-This gives you a clean foundation to extend into:
-
-- product listing pages
-- product details pages
-- cart and checkout
-- auth (login/signup)
-- admin panel
-- API/database integration
-
----
-
-## 6) Step-by-step roadmap to make it production-ready
-
-### Phase A — Foundation
-1. Set up environment variables (`.env.local`) for API URLs and secrets.
-2. Add a proper folder strategy (`features/`, `lib/`, `services/`).
-3. Configure formatting and hooks (Prettier + Husky + lint-staged).
-
-### Phase B — Core commerce flow
-1. Create dynamic routes:
-   - `/products`
-   - `/products/[slug]`
-   - `/cart`
-   - `/checkout`
-2. Build cart state with Zustand/Redux Toolkit.
-3. Add product filtering, sorting, and search query sync in URL.
-
-### Phase C — Backend integration
-1. Add APIs using Next Route Handlers (`app/api/*`) or external backend.
-2. Connect DB (PostgreSQL + Prisma / MongoDB).
-3. Add user accounts, orders, payment state.
-
-### Phase D — Scale + quality
-1. Add unit tests (Vitest/Jest) and E2E tests (Playwright).
-2. Add image optimization, skeleton loading, and caching.
-3. Add analytics, logging, and CI/CD workflow.
-
----
-
-## 7) Useful commands
+1. Copy `.env.example` to `.env.local`.
+2. Fill values for app URL, API URL, and secrets.
 
 ```bash
-npm run dev      # Start dev server
-npm run build    # Build production app
-npm run start    # Start production server
-npm run lint     # Lint code
+cp .env.example .env.local
+```
+
+`lib/env.ts` provides typed access and fail-fast checks for required public variables.
+
+### A2. Folder architecture
+
+This starter uses a scalable pattern:
+
+- `features/` for domain modules (example: `features/products`)
+- `lib/` for shared logic (`lib/env.ts`)
+- `services/` for HTTP/API wrappers (`services/http.ts`)
+
+### A3. Formatting + commit quality gates
+
+Configured tools:
+
+- **Prettier** (`npm run format`, `npm run format:check`)
+- **lint-staged** (format + eslint for staged files)
+- **Husky pre-commit hook** (`.husky/pre-commit`)
+
+After install, initialize husky hooks once if needed:
+
+```bash
+npm run prepare
 ```
 
 ---
 
-## 8) Next feature suggestions (Flipkart-like)
+## 5) UI included in this starter
 
-- Mega menu with categories/subcategories
-- Offer banners and carousel
-- Wishlist and compare
-- Delivery pincode checker
-- Seller dashboard
-- Multi-language and regional pricing
+- Flipkart-like blue header and search bar
+- Category pills section
+- Deal/product cards with rating and discount
+
+This gives you a clean visual base for commerce features.
 
 ---
 
-If you want, the next step can be: **I can scaffold cart + product details page + fake API in this same project**.
+## 6) Next phases to build full e-commerce flow
+
+### Phase B — Commerce core
+
+- `/products`, `/products/[slug]`, `/cart`, `/checkout`
+- Cart state (Zustand/Redux Toolkit)
+- Filters/sorting/search synced with URL params
+
+### Phase C — Backend
+
+- Next.js route handlers (`app/api/*`) or external API
+- DB integration (Postgres + Prisma or MongoDB)
+- Auth, orders, payment status handling
+
+### Phase D — Production quality
+
+- Unit + integration + E2E tests
+- Performance optimization and caching
+- CI/CD, analytics, logging, error monitoring
+
+---
+
+## 7) Commands
+
+```bash
+npm run dev
+npm run build
+npm run start
+npm run lint
+npm run format
+npm run format:check
+```
+
+---
+
+## 8) Suggested Flipkart-like feature backlog
+
+- Mega menu with nested categories
+- Banner carousel and campaign cards
+- Wishlist and product compare
+- Delivery pincode checker
+- Seller/admin dashboard
+- Multi-language + region-aware pricing

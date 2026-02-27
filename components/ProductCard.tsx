@@ -16,7 +16,9 @@ export function ProductCard({ product }: { product: Product }) {
         {product.rating} ★
       </p>
       <div className="mt-3 flex items-center gap-2">
-        <span className="text-base font-bold">₹{product.salePrice.toLocaleString("en-IN")}</span>
+        <span className="text-base font-bold">
+          ₹{product.salePrice.toLocaleString("en-IN")}
+        </span>
         <span className="text-xs text-slate-500 line-through">
           ₹{product.originalPrice.toLocaleString("en-IN")}
         </span>
