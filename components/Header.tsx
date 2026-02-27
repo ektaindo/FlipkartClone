@@ -1,19 +1,26 @@
+import Link from "next/link";
+import { CartCountBadge } from "@/components/cart/CartCountBadge";
+
 export function Header() {
   return (
     <header className="bg-brand px-4 py-3 text-white shadow-md">
       <div className="mx-auto flex max-w-6xl items-center gap-4">
-        <div>
-          <p className="text-xl font-bold leading-none">Flipkart</p>
+        <Link href="/" className="no-underline">
+          <p className="text-xl font-bold leading-none text-white">Flipkart</p>
           <p className="text-xs text-blue-100">Explore Plus</p>
-        </div>
+        </Link>
         <input
           className="h-10 w-full rounded-sm border-0 px-3 text-sm text-slate-900 outline-none"
           placeholder="Search for products, brands and more"
           type="text"
         />
-        <button className="rounded-sm bg-white px-6 py-2 text-sm font-semibold text-brand">
-          Login
-        </button>
+        <nav className="flex items-center gap-4 text-sm font-semibold">
+          <Link href="/products">Products</Link>
+          <Link className="inline-flex items-center gap-1" href="/cart">
+            Cart <CartCountBadge />
+          </Link>
+          <Link href="/checkout">Checkout</Link>
+        </nav>
       </div>
     </header>
   );

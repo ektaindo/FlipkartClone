@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { Product } from "@/data/products";
+import { AddToCartButton } from "@/components/cart/AddToCartButton";
 
 function discountPercentage(originalPrice: number, salePrice: number) {
   return Math.round(((originalPrice - salePrice) / originalPrice) * 100);
@@ -9,8 +11,10 @@ export function ProductCard({ product }: { product: Product }) {
 
   return (
     <article className="rounded-lg bg-white p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
-      <div className="mb-3 h-32 rounded bg-slate-100" />
-      <h3 className="line-clamp-2 text-sm font-semibold">{product.name}</h3>
+      <Link href={`/products/${product.slug}`}>
+        <div className="mb-3 h-32 rounded bg-slate-100" />
+        <h3 className="line-clamp-2 text-sm font-semibold">{product.name}</h3>
+      </Link>
       <p className="mt-1 text-xs text-slate-500">{product.brand}</p>
       <p className="mt-2 inline-flex rounded bg-green-600 px-2 py-0.5 text-xs font-medium text-white">
         {product.rating} ★
@@ -23,6 +27,9 @@ export function ProductCard({ product }: { product: Product }) {
           ₹{product.originalPrice.toLocaleString("en-IN")}
         </span>
         <span className="text-xs font-semibold text-green-700">{discount}% off</span>
+      </div>
+      <div className="mt-3">
+        <AddToCartButton product={product} />
       </div>
     </article>
   );

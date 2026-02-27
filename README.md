@@ -54,91 +54,76 @@ npx create-next-app@latest . --typescript --eslint --tailwind --app --src-dir=fa
 ```text
 .
 ├── app/                      # Pages/routes with Next.js App Router
+│   ├── products/             # Listing + product details routes
+│   ├── cart/                 # Cart route
+│   └── checkout/             # Checkout route
 ├── components/               # Shared UI components
 ├── data/                     # Static/demo data
-├── features/                 # Domain-based code modules (products, cart, auth)
-│   └── products/
+├── features/                 # Domain-based modules (products, cart, auth)
 ├── lib/                      # Shared utilities (env, constants, helpers)
 ├── services/                 # API clients and integration helpers
 ├── public/                   # Static assets
-├── .env.example              # Environment template
-├── .husky/pre-commit         # Git hook for pre-commit checks
-├── .prettierrc.json          # Formatting rules
 └── package.json              # Scripts/dependencies/lint-staged config
 ```
 
 ---
 
-## 4) Phase A setup (implemented in this repo)
+## 4) Phase A setup (already implemented)
 
 ### A1. Environment variables
-
-1. Copy `.env.example` to `.env.local`.
-2. Fill values for app URL, API URL, and secrets.
 
 ```bash
 cp .env.example .env.local
 ```
 
-`lib/env.ts` provides typed access and fail-fast checks for required public variables.
+- `.env.example` contains app/API/auth/database placeholders.
+- `lib/env.ts` gives typed env access with required checks for public vars.
 
 ### A2. Folder architecture
 
-This starter uses a scalable pattern:
+- `features/` for domain modules (example: `features/products`, `features/cart`)
+- `lib/` for shared logic
+- `services/` for HTTP/API wrappers
 
-- `features/` for domain modules (example: `features/products`)
-- `lib/` for shared logic (`lib/env.ts`)
-- `services/` for HTTP/API wrappers (`services/http.ts`)
+### A3. Formatting and commit quality gates
 
-### A3. Formatting + commit quality gates
-
-Configured tools:
-
-- **Prettier** (`npm run format`, `npm run format:check`)
-- **lint-staged** (format + eslint for staged files)
-- **Husky pre-commit hook** (`.husky/pre-commit`)
-
-After install, initialize husky hooks once if needed:
-
-```bash
-npm run prepare
-```
+- Prettier: `npm run format`, `npm run format:check`
+- lint-staged + Husky pre-commit hook
 
 ---
 
-## 5) UI included in this starter
+## 5) Phase B (implemented in this repo)
 
-- Flipkart-like blue header and search bar
-- Category pills section
-- Deal/product cards with rating and discount
+### B1. Commerce routes
 
-This gives you a clean visual base for commerce features.
+- `/products` → searchable/filterable/sortable product listing
+- `/products/[slug]` → product details page
+- `/cart` → cart management page
+- `/checkout` → basic checkout and place-order flow
+
+### B2. Cart state
+
+- `features/cart/CartProvider.tsx` provides app-wide cart state
+- Add/remove/update quantity actions
+- LocalStorage persistence across refreshes
+- Cart counter badge in header
+
+### B3. URL query sync for search/filter/sort
+
+`/products` uses URL params:
+
+- `q` for search text
+- `category` for category filter
+- `sort` for sorting mode
+
+Examples:
+
+- `/products?q=samsung`
+- `/products?category=electronics&sort=price-asc`
 
 ---
 
-## 6) Next phases to build full e-commerce flow
-
-### Phase B — Commerce core
-
-- `/products`, `/products/[slug]`, `/cart`, `/checkout`
-- Cart state (Zustand/Redux Toolkit)
-- Filters/sorting/search synced with URL params
-
-### Phase C — Backend
-
-- Next.js route handlers (`app/api/*`) or external API
-- DB integration (Postgres + Prisma or MongoDB)
-- Auth, orders, payment status handling
-
-### Phase D — Production quality
-
-- Unit + integration + E2E tests
-- Performance optimization and caching
-- CI/CD, analytics, logging, error monitoring
-
----
-
-## 7) Commands
+## 6) Commands
 
 ```bash
 npm run dev
@@ -151,11 +136,11 @@ npm run format:check
 
 ---
 
-## 8) Suggested Flipkart-like feature backlog
+## 7) Next feature backlog (Phase C and beyond)
 
-- Mega menu with nested categories
-- Banner carousel and campaign cards
-- Wishlist and product compare
-- Delivery pincode checker
-- Seller/admin dashboard
-- Multi-language + region-aware pricing
+- API/database integration (Prisma/Postgres or MongoDB)
+- Authentication and protected checkout
+- Coupons, addresses, payment gateway
+- Orders and returns module
+- Unit, integration, and E2E test coverage
+- CI/CD + observability
