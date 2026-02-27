@@ -39,6 +39,7 @@ JWT_SECRET=replace-with-a-long-random-secret
 ```
 
 4. In Firebase Console:
+
    - Build → Firestore Database
    - Create database
    - Choose **Firestore Native mode (Standard)**
@@ -50,6 +51,20 @@ JWT_SECRET=replace-with-a-long-random-secret
    - add items to cart
    - `/checkout` place order
    - `/orders` view order history
+
+### If you see `error:1E08010C:DECODER routines::unsupported` on signup/login
+
+This means the private key format is invalid at runtime. Verify:
+
+1. Use `private_key` from service account JSON (not private_key_id).
+2. Keep it in one env line with escaped newlines:
+
+```env
+FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
+```
+
+3. If your shell already expands newlines, do not double-escape.
+4. Restart dev server after updating `.env.local`.
 
 ---
 

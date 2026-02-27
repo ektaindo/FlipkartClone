@@ -5,11 +5,42 @@ type JsonValue = Primitive | JsonValue[] | { [key: string]: JsonValue };
 
 const FIREBASE_PROJECT_ID = process.env.FIREBASE_PROJECT_ID;
 const FIREBASE_CLIENT_EMAIL = process.env.FIREBASE_CLIENT_EMAIL;
-const FIREBASE_PRIVATE_KEY = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n");
+
+function normalizePrivateKey(rawValue?: string) {
+  if (!rawValue) {
+    return undefined;
+  }
+
+  const trimmed = rawValue.trim();
+  const unquoted =
+    (trimmed.startsWith('"') && trimmed.endsWith('"')) ||
+    (trimmed.startsWith("'") && trimmed.endsWith("'"))
+      ? trimmed.slice(1, -1)
+      : trimmed;
+
+  return unquoted.replace(/\\r/g, "").replace(/\\n/g, "\n");
+}
+
+const FIREBASE_PRIVATE_KEY = normalizePrivateKey(process.env.FIREBASE_PRIVATE_KEY);
 
 function requireFirebaseEnv() {
   if (!FIREBASE_PROJECT_ID || !FIREBASE_CLIENT_EMAIL || !FIREBASE_PRIVATE_KEY) {
     throw new Error("Missing Firebase service account environment variables");
+  }
+}
+
+function getPrivateKeyObject() {
+  requireFirebaseEnv();
+
+  try {
+    return crypto.createPrivateKey({
+      key: FIREBASE_PRIVATE_KEY as string,
+      format: "pem"
+    });
+  } catch {
+    throw new Error(
+      "Invalid FIREBASE_PRIVATE_KEY format. Use the exact service account private_key value and preserve escaped \\n newlines."
+    );
   }
 }
 
@@ -41,7 +72,7 @@ async function getAccessToken() {
   const signer = crypto.createSign("RSA-SHA256");
   signer.update(unsigned);
   signer.end();
-  const signature = signer.sign(FIREBASE_PRIVATE_KEY as string);
+  const signature = signer.sign(getPrivateKeyObject());
 
   const jwt = `${unsigned}.${base64Url(signature)}`;
 
