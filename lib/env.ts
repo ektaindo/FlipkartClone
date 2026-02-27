@@ -5,10 +5,10 @@ type PublicEnv = {
 };
 
 type ServerEnv = {
-  NEXTAUTH_URL?: string;
-  NEXTAUTH_SECRET?: string;
-  DATABASE_URL?: string;
-  MONGODB_URI?: string;
+  JWT_SECRET?: string;
+  MONGODB_DATA_API_URL?: string;
+  MONGODB_DATA_API_KEY?: string;
+  MONGODB_DATABASE?: string;
 };
 
 function requiredValue(value: string | undefined, name: string) {
@@ -35,8 +35,8 @@ export const publicEnv: PublicEnv = {
 };
 
 export const serverEnv: ServerEnv = {
-  NEXTAUTH_URL: process.env.NEXTAUTH_URL,
-  NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
-  DATABASE_URL: process.env.DATABASE_URL,
-  MONGODB_URI: process.env.MONGODB_URI
+  JWT_SECRET: process.env.JWT_SECRET,
+  MONGODB_DATA_API_URL: process.env.MONGODB_DATA_API_URL,
+  MONGODB_DATA_API_KEY: process.env.MONGODB_DATA_API_KEY,
+  MONGODB_DATABASE: process.env.MONGODB_DATABASE
 };

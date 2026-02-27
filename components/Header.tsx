@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CartCountBadge } from "@/components/cart/CartCountBadge";
+import { AuthStatus } from "@/components/auth/AuthStatus";
 
 export function Header() {
   return (
@@ -20,6 +21,8 @@ export function Header() {
             Cart <CartCountBadge />
           </Link>
           <Link href="/checkout">Checkout</Link>
+          <Link href="/orders">Orders</Link>
+          <AuthStatus />
         </nav>
       </div>
     </header>
