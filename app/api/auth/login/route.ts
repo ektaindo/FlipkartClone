@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { setAuthCookie, signAuthToken } from "@/lib/auth";
-import { findOne } from "@/lib/mongodb";
+import { queryDocuments } from "@/lib/firebase";
 import { verifyPassword } from "@/lib/password";
 
 type UserRecord = {
-  _id: string;
+  id: string;
   name: string;
   email: string;
   passwordHash: string;
@@ -25,18 +25,21 @@ export async function POST(request: Request) {
     }
 
     const email = body.email.toLowerCase();
-    const user = (await findOne("users", { email })) as UserRecord | null;
+    const users = (await queryDocuments("users", {
+      field: "email",
+      value: email
+    })) as unknown as UserRecord[];
 
+    const user = users[0];
     if (!user || !verifyPassword(body.password, user.passwordHash)) {
       return NextResponse.json({ message: "Invalid credentials." }, { status: 401 });
     }
 
-    const userId = String(user._id);
-    const token = signAuthToken({ userId, email: user.email, name: user.name });
+    const token = signAuthToken({ userId: user.id, email: user.email, name: user.name });
     setAuthCookie(token);
 
     return NextResponse.json({
-      user: { id: userId, name: user.name, email: user.email }
+      user: { id: user.id, name: user.name, email: user.email }
     });
   } catch (error) {
     return NextResponse.json(

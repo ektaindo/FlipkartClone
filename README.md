@@ -1,6 +1,6 @@
 # Flipkart-Style E-commerce Starter (Next.js + React + TypeScript)
 
-A structured starter for a Flipkart-like e-commerce app with React, Next.js, TypeScript, Tailwind, and **Phase C backend integration using MongoDB Atlas Data API**.
+This starter now uses **Firebase Firestore** for backend persistence (users + orders), along with custom cookie auth.
 
 ## Quick start
 
@@ -14,45 +14,55 @@ npm run dev
 
 Open http://localhost:3000
 
-## Environment (`.env.local`)
+---
+
+## Firebase setup (after you generated private key)
+
+Since you already generated a service account private key, do this next:
+
+1. Open your service account JSON file.
+2. Copy these values into `.env.local`:
+
+```env
+FIREBASE_PROJECT_ID=...
+FIREBASE_CLIENT_EMAIL=...
+FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
+```
+
+3. Also set app/auth vars:
 
 ```env
 NEXT_PUBLIC_APP_NAME=Flipkart Clone Starter
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 NEXT_PUBLIC_API_BASE_URL=http://localhost:3000/api
 JWT_SECRET=replace-with-a-long-random-secret
-MONGODB_DATA_API_URL=https://data.mongodb-api.com/app/<app-id>/endpoint/data/v1/action
-MONGODB_DATA_API_KEY=replace-with-data-api-key
-MONGODB_DATABASE=flipkart_clone
 ```
 
-## Implemented phases
+4. In Firebase Console:
+   - Build → Firestore Database
+   - Create database
+   - Choose **Firestore Native mode (Standard)**
+   - Start with **Production mode** rules (recommended)
 
-### Phase A
+5. Run app and test:
+   - `/signup` to create a user
+   - `/login` to sign in
+   - add items to cart
+   - `/checkout` place order
+   - `/orders` view order history
 
-- folder strategy (`features`, `lib`, `services`)
-- formatting/lint tooling
-- typed env helper
+---
 
-### Phase B
+## Implemented backend routes
 
-- `/products` with search/filter/sort via URL params
-- `/products/[slug]` details page
-- `/cart` and `/checkout` flow
+- `POST /api/auth/signup`
+- `POST /api/auth/login`
+- `POST /api/auth/logout`
+- `GET /api/auth/me`
+- `POST /api/orders`
+- `GET /api/orders`
 
-### Phase C
-
-- **Login + signup feature** (`/login`, `/signup`)
-- auth APIs:
-  - `POST /api/auth/signup`
-  - `POST /api/auth/login`
-  - `POST /api/auth/logout`
-  - `GET /api/auth/me`
-- order APIs with payment state:
-  - `POST /api/orders` (creates order with `paymentStatus: pending`)
-  - `GET /api/orders` (current user order history)
-- `/orders` page to view placed orders
-- checkout persists order to MongoDB API
+---
 
 ## Commands
 

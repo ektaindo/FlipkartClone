@@ -6,9 +6,9 @@ type PublicEnv = {
 
 type ServerEnv = {
   JWT_SECRET?: string;
-  MONGODB_DATA_API_URL?: string;
-  MONGODB_DATA_API_KEY?: string;
-  MONGODB_DATABASE?: string;
+  FIREBASE_PROJECT_ID?: string;
+  FIREBASE_CLIENT_EMAIL?: string;
+  FIREBASE_PRIVATE_KEY?: string;
 };
 
 function requiredValue(value: string | undefined, name: string) {
@@ -36,7 +36,7 @@ export const publicEnv: PublicEnv = {
 
 export const serverEnv: ServerEnv = {
   JWT_SECRET: process.env.JWT_SECRET,
-  MONGODB_DATA_API_URL: process.env.MONGODB_DATA_API_URL,
-  MONGODB_DATA_API_KEY: process.env.MONGODB_DATA_API_KEY,
-  MONGODB_DATABASE: process.env.MONGODB_DATABASE
+  FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID,
+  FIREBASE_CLIENT_EMAIL: process.env.FIREBASE_CLIENT_EMAIL,
+  FIREBASE_PRIVATE_KEY: process.env.FIREBASE_PRIVATE_KEY
 };

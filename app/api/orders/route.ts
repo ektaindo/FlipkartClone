@@ -1,12 +1,20 @@
 import { NextResponse } from "next/server";
 import { getAuthPayload } from "@/lib/auth";
-import { findMany, insertOne } from "@/lib/mongodb";
+import { createDocument, queryDocuments } from "@/lib/firebase";
 
 type ItemInput = {
   productId: string;
   name: string;
   quantity: number;
   price: number;
+};
+
+type OrderRecord = {
+  id: string;
+  subtotal: number;
+  paymentStatus: "pending" | "paid" | "failed";
+  items: ItemInput[];
+  createdAt: string;
 };
 
 export async function POST(request: Request) {
@@ -29,7 +37,7 @@ export async function POST(request: Request) {
       0
     );
 
-    const id = await insertOne("orders", {
+    const id = await createDocument("orders", {
       userId: user.userId,
       items: body.items,
       subtotal,
@@ -39,7 +47,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       order: {
-        id: String(id),
+        id,
         subtotal,
         paymentStatus: "pending"
       }
@@ -59,11 +67,16 @@ export async function GET() {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const orders = await findMany("orders", { userId: user.userId }, { createdAt: -1 });
+    const orders = (await queryDocuments("orders", {
+      field: "userId",
+      value: user.userId,
+      orderBy: "createdAt",
+      direction: "DESCENDING"
+    })) as unknown as OrderRecord[];
 
     return NextResponse.json({
       orders: orders.map((order) => ({
-        id: String(order._id),
+        id: order.id,
         subtotal: Number(order.subtotal),
         paymentStatus: order.paymentStatus,
         items: order.items,

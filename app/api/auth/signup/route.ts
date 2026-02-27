@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { setAuthCookie, signAuthToken } from "@/lib/auth";
-import { findOne, insertOne } from "@/lib/mongodb";
+import { createDocument, queryDocuments } from "@/lib/firebase";
 import { hashPassword } from "@/lib/password";
 
 export async function POST(request: Request) {
@@ -26,22 +26,26 @@ export async function POST(request: Request) {
     }
 
     const email = body.email.toLowerCase();
-    const existing = await findOne("users", { email });
-    if (existing) {
+    const existing = await queryDocuments("users", {
+      field: "email",
+      value: email
+    });
+
+    if (existing.length > 0) {
       return NextResponse.json({ message: "Email already registered." }, { status: 409 });
     }
 
-    const id = await insertOne("users", {
+    const id = await createDocument("users", {
       name: body.name,
       email,
       passwordHash: hashPassword(body.password),
       createdAt: new Date().toISOString()
     });
 
-    const token = signAuthToken({ userId: String(id), email, name: body.name });
+    const token = signAuthToken({ userId: id, email, name: body.name });
     setAuthCookie(token);
 
-    return NextResponse.json({ user: { id: String(id), name: body.name, email } });
+    return NextResponse.json({ user: { id, name: body.name, email } });
   } catch (error) {
     return NextResponse.json(
       { message: error instanceof Error ? error.message : "Signup failed" },
