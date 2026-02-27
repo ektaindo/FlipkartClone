@@ -27,6 +27,11 @@ export default function CheckoutPage() {
         })
       });
 
+      if (response.status === 401) {
+        window.location.href = "/login?next=/checkout";
+        return;
+      }
+
       const json = (await response.json()) as { message?: string };
       if (!response.ok) {
         setError(json.message ?? "Unable to place order.");

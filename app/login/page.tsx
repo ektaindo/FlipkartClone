@@ -2,8 +2,12 @@
 
 import Link from "next/link";
 import { FormEvent, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 export default function LoginPage() {
+  const searchParams = useSearchParams();
+  const nextPath = searchParams.get("next") || "/products";
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -27,7 +31,7 @@ export default function LoginPage() {
         return;
       }
 
-      window.location.href = "/products";
+      window.location.href = nextPath;
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
